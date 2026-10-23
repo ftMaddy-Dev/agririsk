@@ -6,9 +6,16 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from urllib.parse import urlparse
 
 DEFAULT_PATH = Path(__file__).resolve().parents[2] / "data" / "reference" / "crop_config.json"
 ACCEPTED = {"verified", "verified_excerpt"}
+# Allowed source hosts per declared source_type. Extend only with real,
+# checked publisher domains.
+SOURCE_HOSTS = {
+    "tnau": ("agritech.tnau.ac.in",),
+    "icar": ("icar.gov.in", "icar.org.in"),
+}
 
 
 def load_config(path: str | Path = DEFAULT_PATH) -> dict:
@@ -38,3 +45,14 @@ def usable_value(config: dict, crop: str, name: str):
 def unresolved(config: dict, crop: str) -> list[str]:
     return [n for n, p in get_crop(config, crop)["parameters"].items()
             if p["status"] not in ACCEPTED]
+
+
+def source_problem(param: dict) -> str | None:
+    """None if the source URL matches the declared source_type, else a message."""
+    st = param.get("source_type")
+    if st not in SOURCE_HOSTS:
+        return f"unknown or missing source_type {st!r}"
+    host = urlparse(param.get("source", "")).hostname or ""
+    if not any(host == h or host.endswith("." + h) for h in SOURCE_HOSTS[st]):
+        return f"source host {host!r} does not match source_type {st!r}"
+    return None

@@ -64,6 +64,7 @@
           "unit": "degC",
           "status": "verified",
           "source": "https://agritech.tnau.ac.in/agriculture/oilseeds_cropimprovement.html",
+          "source_type": "tnau",
           "note": "Listed as T. Max; page does not define whether it is a tolerance limit or a stress trigger",
           "corroborated_by": "CPG 2020 p.198 climate table"
         },
@@ -72,6 +73,7 @@
           "unit": "degC",
           "status": "verified",
           "source": "https://agritech.tnau.ac.in/agriculture/oilseeds_cropimprovement.html",
+          "source_type": "tnau",
           "note": "Listed as T. Min; meaning not defined on the page",
           "corroborated_by": "CPG 2020 p.198 climate table"
         },
@@ -83,6 +85,7 @@
           "unit": "degC",
           "status": "verified",
           "source": "https://agritech.tnau.ac.in/agriculture/oilseeds_cropimprovement.html",
+          "source_type": "tnau",
           "note": "",
           "corroborated_by": "CPG 2020 p.198 climate table"
         },
@@ -94,6 +97,7 @@
           "unit": "mm",
           "status": "verified",
           "source": "https://agritech.tnau.ac.in/agriculture/oilseeds_cropimprovement.html",
+          "source_type": "tnau",
           "note": "Period (season vs year) not stated on the page",
           "corroborated_by": "CPG 2020 p.198 climate table"
         },
@@ -102,6 +106,7 @@
           "unit": "m",
           "status": "verified",
           "source": "https://agritech.tnau.ac.in/agriculture/oilseeds_cropimprovement.html",
+          "source_type": "tnau",
           "note": "",
           "corroborated_by": "CPG 2020 p.198 climate table"
         },
@@ -113,6 +118,7 @@
           "unit": "days",
           "status": "verified",
           "source": "https://agritech.tnau.ac.in/agriculture/oilseeds_cropimprovement.html",
+          "source_type": "tnau",
           "note": "Range across TNAU varieties VRI(Sv)2, TMV7, VRI3, VRI4, VRI5; CPG 2020 p.199 lists VRI(Sv)2, TMV7, VRI3 at 75-85 days"
         },
         "soil_ph_range": {
@@ -218,6 +224,7 @@
           "unit": "degC",
           "status": "verified",
           "source": "https://agritech.tnau.ac.in/pdf/AGRICULTURE.pdf",
+          "source_type": "tnau",
           "note": "CPG 2020 p.181 climate table; guide does not define whether T_Max is a tolerance limit or a stress trigger"
         },
         "temperature_min_c": {
@@ -225,6 +232,7 @@
           "unit": "degC",
           "status": "verified",
           "source": "https://agritech.tnau.ac.in/pdf/AGRICULTURE.pdf",
+          "source_type": "tnau",
           "note": "CPG 2020 p.181 climate table; meaning of T_Min not defined"
         },
         "temperature_optimum_c": {
@@ -235,6 +243,7 @@
           "unit": "degC",
           "status": "verified",
           "source": "https://agritech.tnau.ac.in/pdf/AGRICULTURE.pdf",
+          "source_type": "tnau",
           "note": "CPG 2020 p.181 climate table"
         },
         "rainfall_mm": {
@@ -245,6 +254,7 @@
           "unit": "mm",
           "status": "verified",
           "source": "https://agritech.tnau.ac.in/pdf/AGRICULTURE.pdf",
+          "source_type": "tnau",
           "note": "CPG 2020 p.181 climate table; period (season vs year) not stated"
         },
         "altitude_max_m": {
@@ -252,6 +262,7 @@
           "unit": "m",
           "status": "verified",
           "source": "https://agritech.tnau.ac.in/pdf/AGRICULTURE.pdf",
+          "source_type": "tnau",
           "note": "CPG 2020 p.181 climate table"
         },
         "crop_duration_days_bunch": {
@@ -262,6 +273,7 @@
           "unit": "days",
           "status": "verified",
           "source": "https://agritech.tnau.ac.in/pdf/AGRICULTURE.pdf",
+          "source_type": "tnau",
           "note": "CPG 2020 pp.183-184 variety table; range across bunch varieties (TMV14 95-100 ... VRIGn6 120-125)"
         },
         "crop_duration_days_spreading": {
@@ -272,6 +284,7 @@
           "unit": "days",
           "status": "verified",
           "source": "https://agritech.tnau.ac.in/pdf/AGRICULTURE.pdf",
+          "source_type": "tnau",
           "note": "CPG 2020 pp.183-184; semi-spreading varieties VRIGn7 and CO6"
         },
         "soil_drainage": {
@@ -279,6 +292,7 @@
           "unit": "",
           "status": "verified_excerpt",
           "source": "https://agritech.tnau.ac.in/org_farm/orgfarm_prac_agri_groundnut_climate.html",
+          "source_type": "tnau",
           "note": "Qualitative only"
         },
         "soil_ph_range": {
@@ -302,6 +316,7 @@
           "unit": "days",
           "status": "verified",
           "source": "https://agritech.tnau.ac.in/pdf/AGRICULTURE.pdf",
+          "source_type": "tnau",
           "note": "CPG 2020 p.181: tolerates flooding for one week once established. Qualitative statement, not a stress trigger; says nothing about germination/seedling stage. Do not infer waterlogging from soil texture."
         },
         "irrigation_iw_cpe_ratio": {
@@ -312,6 +327,7 @@
           "unit": "IW/CPE",
           "status": "verified",
           "source": "https://agritech.tnau.ac.in/pdf/AGRICULTURE.pdf",
+          "source_type": "tnau",
           "note": "CPG 2020 p.192 (irrigated groundnut). Needs pan evaporation (CPE), unavailable until a weather source is chosen"
         }
       },
