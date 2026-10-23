@@ -1,0 +1,328 @@
+{
+  "schema_version": 1,
+  "status_meanings": {
+    "verified": "Read in an official TNAU source (web page or Crop Production Guide 2020)",
+    "verified_excerpt": "Seen in a search excerpt of a TNAU page; open the page to confirm",
+    "unverified_secondary": "Non-TNAU source; NOT used by the rule engine",
+    "unresolved": "No source found yet",
+    "verified_partial": "Some items found in an official TNAU source; remaining items unresolved"
+  },
+  "crops": {
+    "sesame": {
+      "common_names": [
+        "Sesame",
+        "Gingelly"
+      ],
+      "risk_categories": [
+        "waterlogging",
+        "heat_stress",
+        "water_stress",
+        "disease",
+        "soil_suitability"
+      ],
+      "growth_stages": {
+        "status": "verified_partial",
+        "source": "https://agritech.tnau.ac.in/pdf/AGRICULTURE.pdf",
+        "markers": [
+          {
+            "event": "life irrigation",
+            "das": 7,
+            "source": "CPG 2020 p.202"
+          },
+          {
+            "event": "thinning",
+            "das": [
+              15,
+              30
+            ],
+            "source": "CPG 2020 p.202"
+          },
+          {
+            "event": "pre-flowering irrigation",
+            "das": 25,
+            "source": "CPG 2020 p.202"
+          },
+          {
+            "stage": "flowering (critical for moisture)",
+            "das": [
+              35,
+              45
+            ],
+            "source": "CPG 2020 p.202"
+          },
+          {
+            "event": "stop irrigation",
+            "das": 65,
+            "source": "CPG 2020 p.202; moisture should be low in maturity phase"
+          }
+        ],
+        "unresolved": "Formal stage boundaries and stage-wise temperature/rainfall thresholds not given"
+      },
+      "parameters": {
+        "temperature_max_c": {
+          "value": 40,
+          "unit": "degC",
+          "status": "verified",
+          "source": "https://agritech.tnau.ac.in/agriculture/oilseeds_cropimprovement.html",
+          "note": "Listed as T. Max; page does not define whether it is a tolerance limit or a stress trigger",
+          "corroborated_by": "CPG 2020 p.198 climate table"
+        },
+        "temperature_min_c": {
+          "value": 20,
+          "unit": "degC",
+          "status": "verified",
+          "source": "https://agritech.tnau.ac.in/agriculture/oilseeds_cropimprovement.html",
+          "note": "Listed as T. Min; meaning not defined on the page",
+          "corroborated_by": "CPG 2020 p.198 climate table"
+        },
+        "temperature_optimum_c": {
+          "value": [
+            25,
+            35
+          ],
+          "unit": "degC",
+          "status": "verified",
+          "source": "https://agritech.tnau.ac.in/agriculture/oilseeds_cropimprovement.html",
+          "note": "",
+          "corroborated_by": "CPG 2020 p.198 climate table"
+        },
+        "rainfall_mm": {
+          "value": [
+            450,
+            500
+          ],
+          "unit": "mm",
+          "status": "verified",
+          "source": "https://agritech.tnau.ac.in/agriculture/oilseeds_cropimprovement.html",
+          "note": "Period (season vs year) not stated on the page",
+          "corroborated_by": "CPG 2020 p.198 climate table"
+        },
+        "altitude_max_m": {
+          "value": 1600,
+          "unit": "m",
+          "status": "verified",
+          "source": "https://agritech.tnau.ac.in/agriculture/oilseeds_cropimprovement.html",
+          "note": "",
+          "corroborated_by": "CPG 2020 p.198 climate table"
+        },
+        "crop_duration_days": {
+          "value": [
+            75,
+            90
+          ],
+          "unit": "days",
+          "status": "verified",
+          "source": "https://agritech.tnau.ac.in/agriculture/oilseeds_cropimprovement.html",
+          "note": "Range across TNAU varieties VRI(Sv)2, TMV7, VRI3, VRI4, VRI5; CPG 2020 p.199 lists VRI(Sv)2, TMV7, VRI3 at 75-85 days"
+        },
+        "soil_ph_range": {
+          "value": null,
+          "unit": "pH",
+          "status": "unresolved",
+          "source": "",
+          "note": "CPG 2020 sesame section (pp.198-206) gives no pH range",
+          "secondary_candidates": [
+            {
+              "value": [
+                5.5,
+                7.5
+              ],
+              "source": "FAO EcoCrop (optimal; absolute 4.5-8)"
+            },
+            {
+              "value": [
+                5.5,
+                7.0
+              ],
+              "source": "agridots.com course page (not official)"
+            }
+          ]
+        },
+        "waterlogging_tolerance_days": {
+          "value": null,
+          "unit": "days",
+          "status": "unresolved",
+          "source": "",
+          "note": "CPG 2020 pp.199-200 says to level beds to prevent water stagnation, which affects germination adversely; no numeric tolerance given"
+        },
+        "soil_texture_preference": {
+          "value": null,
+          "unit": "",
+          "status": "unresolved",
+          "source": "",
+          "note": "Need TNAU texture/drainage requirement for sesame"
+        }
+      }
+    },
+    "groundnut": {
+      "common_names": [
+        "Groundnut",
+        "Peanut"
+      ],
+      "risk_categories": [
+        "waterlogging",
+        "heat_stress",
+        "water_stress",
+        "disease",
+        "soil_suitability"
+      ],
+      "growth_stages": {
+        "status": "verified_partial",
+        "source": "https://agritech.tnau.ac.in/pdf/AGRICULTURE.pdf",
+        "phases_das": [
+          {
+            "phase": "pre-flowering",
+            "das": [
+              1,
+              25
+            ]
+          },
+          {
+            "phase": "flowering",
+            "das": [
+              26,
+              60
+            ]
+          },
+          {
+            "phase": "maturity",
+            "das": [
+              61,
+              105
+            ]
+          }
+        ],
+        "phase_note": "CPG 2020 p.192, irrigated crop of about 105 days; boundaries for other durations not given",
+        "critical_for_irrigation": [
+          "pegging",
+          "flowering",
+          "pod development"
+        ],
+        "markers": [
+          {
+            "das": 35,
+            "label": "50 per cent flowering",
+            "source": "CPG 2020 p.190"
+          },
+          {
+            "das": 45,
+            "label": "pod developing stage",
+            "source": "CPG 2020 p.190"
+          }
+        ],
+        "unresolved": "Stage-wise temperature/rainfall thresholds not given"
+      },
+      "parameters": {
+        "temperature_max_c": {
+          "value": 40,
+          "unit": "degC",
+          "status": "verified",
+          "source": "https://agritech.tnau.ac.in/pdf/AGRICULTURE.pdf",
+          "note": "CPG 2020 p.181 climate table; guide does not define whether T_Max is a tolerance limit or a stress trigger"
+        },
+        "temperature_min_c": {
+          "value": 15,
+          "unit": "degC",
+          "status": "verified",
+          "source": "https://agritech.tnau.ac.in/pdf/AGRICULTURE.pdf",
+          "note": "CPG 2020 p.181 climate table; meaning of T_Min not defined"
+        },
+        "temperature_optimum_c": {
+          "value": [
+            25,
+            35
+          ],
+          "unit": "degC",
+          "status": "verified",
+          "source": "https://agritech.tnau.ac.in/pdf/AGRICULTURE.pdf",
+          "note": "CPG 2020 p.181 climate table"
+        },
+        "rainfall_mm": {
+          "value": [
+            500,
+            700
+          ],
+          "unit": "mm",
+          "status": "verified",
+          "source": "https://agritech.tnau.ac.in/pdf/AGRICULTURE.pdf",
+          "note": "CPG 2020 p.181 climate table; period (season vs year) not stated"
+        },
+        "altitude_max_m": {
+          "value": 1160,
+          "unit": "m",
+          "status": "verified",
+          "source": "https://agritech.tnau.ac.in/pdf/AGRICULTURE.pdf",
+          "note": "CPG 2020 p.181 climate table"
+        },
+        "crop_duration_days_bunch": {
+          "value": [
+            95,
+            125
+          ],
+          "unit": "days",
+          "status": "verified",
+          "source": "https://agritech.tnau.ac.in/pdf/AGRICULTURE.pdf",
+          "note": "CPG 2020 pp.183-184 variety table; range across bunch varieties (TMV14 95-100 ... VRIGn6 120-125)"
+        },
+        "crop_duration_days_spreading": {
+          "value": [
+            120,
+            130
+          ],
+          "unit": "days",
+          "status": "verified",
+          "source": "https://agritech.tnau.ac.in/pdf/AGRICULTURE.pdf",
+          "note": "CPG 2020 pp.183-184; semi-spreading varieties VRIGn7 and CO6"
+        },
+        "soil_drainage": {
+          "value": "well drained",
+          "unit": "",
+          "status": "verified_excerpt",
+          "source": "https://agritech.tnau.ac.in/org_farm/orgfarm_prac_agri_groundnut_climate.html",
+          "note": "Qualitative only"
+        },
+        "soil_ph_range": {
+          "value": null,
+          "unit": "pH",
+          "status": "unresolved",
+          "source": "",
+          "note": "CPG 2020 groundnut section (pp.181-198) gives no pH range; TNAU web page says alkaline soils are undesirable, no number",
+          "secondary_candidates": [
+            {
+              "value": [
+                6.0,
+                7.5
+              ],
+              "source": "Rohini College lecture notes (not official)"
+            }
+          ]
+        },
+        "waterlogging_tolerance_days": {
+          "value": 7,
+          "unit": "days",
+          "status": "verified",
+          "source": "https://agritech.tnau.ac.in/pdf/AGRICULTURE.pdf",
+          "note": "CPG 2020 p.181: tolerates flooding for one week once established. Qualitative statement, not a stress trigger; says nothing about germination/seedling stage. Do not infer waterlogging from soil texture."
+        },
+        "irrigation_iw_cpe_ratio": {
+          "value": {
+            "vegetative": 0.4,
+            "reproductive": 0.6
+          },
+          "unit": "IW/CPE",
+          "status": "verified",
+          "source": "https://agritech.tnau.ac.in/pdf/AGRICULTURE.pdf",
+          "note": "CPG 2020 p.192 (irrigated groundnut). Needs pan evaporation (CPE), unavailable until a weather source is chosen"
+        }
+      },
+      "leads": [
+        {
+          "item": "Late leaf spot and rust forewarning model (Aliyarnagar, Vridhachalam)",
+          "source": "CPG 2020 pp.436-437",
+          "status": "unresolved",
+          "needed": "Model inputs and thresholds; not in the pages reviewed"
+        }
+      ]
+    }
+  }
+}
