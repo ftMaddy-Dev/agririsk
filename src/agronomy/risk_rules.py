@@ -86,24 +86,38 @@ def assess_waterlogging(config, crop, stage, soil, obs):
         caveats=[note, "Qualitative documented tolerance, not a validated damage threshold."])
 
 
-def assess_heat_stress(config, crop, stage, soil, obs):
+def assess_heat_stress(config, crop, stage, soil, obs, weather=None):
     tmax = _usable(config, crop, "temperature_max_c")
     t = _check_obs(obs, "max_temperature_c")
+    provenance = "manual"
+    if t is None and weather:
+        wt = _num(weather.get("max_temperature_c"))
+        if wt is not None:
+            t, provenance = wt, "retrieved"
     missing = []
     if tmax is None:
         missing.append("verified T_Max for this crop")
     if t is None:
-        missing.append("observed or forecast maximum temperature (weather provider on hold; manual entry allowed)")
+        missing.append("observed or retrieved maximum temperature (manual entry allowed)")
     if missing:
         return _result("heat_stress", "incomplete", missing=missing)
     note = get_parameter(config, crop, "temperature_max_c").get("note", "")
     level = "elevated" if t > tmax else "not_elevated"
+    caveats = [note, "Growth-stage-specific heat thresholds are not available."]
+    if provenance == "retrieved":
+        n = weather.get("window_days")
+        reasons = [f"Highest daily max in the last {n} completed days was {t} C "
+                   f"on {weather.get('date')} vs documented T_Max {tmax} C."]
+        caveats += ["Using the highest daily max in the window is a design choice, not a TNAU rule.",
+                    "Weather is a modelled grid estimate, not a station reading."]
+    else:
+        reasons = [f"Max temperature {t} C vs documented T_Max {tmax} C."]
     return _result(
         "heat_stress", "assessed", level=level,
-        reasons=[f"Max temperature {t} C vs documented T_Max {tmax} C."],
-        inputs_used={"max_temperature_c": {"value": t, "provenance": "manual"}},
+        reasons=reasons,
+        inputs_used={"max_temperature_c": {"value": t, "provenance": provenance}},
         references=[_source(config, crop, "temperature_max_c")],
-        caveats=[note, "Growth-stage-specific heat thresholds are not available."])
+        caveats=caveats)
 
 
 def assess_water_stress(config, crop, stage, soil, obs):
@@ -157,7 +171,7 @@ def assess_soil_suitability(config, crop, stage, soil, obs, ph_depth=None):
 
 def assess_all(config: dict, crop: str, growth_stage: str | None = None,
                soil: dict | None = None, observations: dict | None = None,
-               ph_depth: str | None = None) -> dict:
+               ph_depth: str | None = None, weather: dict | None = None) -> dict:
     get_crop(config, crop)  # raises KeyError for unknown crop
     soil, obs = soil or {}, observations or {}
     return {
@@ -167,7 +181,7 @@ def assess_all(config: dict, crop: str, growth_stage: str | None = None,
         "disclaimer": DISCLAIMER,
         "assessments": [
             assess_waterlogging(config, crop, growth_stage, soil, obs),
-            assess_heat_stress(config, crop, growth_stage, soil, obs),
+            assess_heat_stress(config, crop, growth_stage, soil, obs, weather),
             assess_water_stress(config, crop, growth_stage, soil, obs),
             assess_disease(config, crop, growth_stage, soil, obs),
             assess_soil_suitability(config, crop, growth_stage, soil, obs, ph_depth),

@@ -14,6 +14,8 @@ from src.agronomy.crop_config import load_config
 from src.agronomy.risk_rules import assess_all
 from src.data_collection.soilgrids_client import (
     fetch_soil_properties, SoilGridsError)
+from src.data_collection.weather_client import (
+    fetch_recent_weather, WeatherError)
 from src.preprocessing.soil_preprocessor import preprocess_record
 
 logger = logging.getLogger(__name__)
@@ -33,6 +35,7 @@ class AssessRequest(BaseModel):
     growth_stage: str | None = None
     observations: Observations = Field(default_factory=Observations)
     include_soil: bool = True
+    include_weather: bool = True
 
 
 class InputUsed(BaseModel):
@@ -67,6 +70,20 @@ class SoilSummary(BaseModel):
     read_via: list[str] = []  # local, remote, cache
 
 
+class WeatherSummary(BaseModel):
+    status: Literal["ok", "partial", "nodata", "unavailable", "not_requested"]
+    message: str = ""  # names gaps or the failure; empty when ok
+    days_ok: int = 0  # completed days with a max temperature
+    window_days: int = 0
+    hottest_day: str | None = None
+    max_temperature_c: float | None = None  # highest daily max in window
+    grid_lat: float | None = None
+    grid_lon: float | None = None
+    elevation_m: float | None = None
+    source: str = ""
+    retrieved_at_utc: str | None = None
+
+
 class AssessResponse(BaseModel):
     crop: str
     growth_stage: str | None = None
@@ -75,6 +92,7 @@ class AssessResponse(BaseModel):
     assessments: list[Assessment]
     location: Location
     soil: SoilSummary
+    weather: WeatherSummary
 
 
 @router.post("/assess", response_model=AssessResponse)
@@ -105,10 +123,34 @@ def assess(req: AssessRequest):
             logger.warning("Soil fetch failed: %s", e)
             soil_info.update(status="unavailable", message=str(e))
 
+    weather_info = {"status": "not_requested", "message": ""}
+    weather_input = None
+
+    if req.include_weather:
+        try:
+            w = fetch_recent_weather(req.lat, req.lon, days=7)
+            with_t = [d for d in w.days if d.max_temperature_c is not None]
+            weather_info = {
+                "status": w.status, "message": w.message,
+                "days_ok": len(with_t), "window_days": len(w.days),
+                "grid_lat": w.grid_lat, "grid_lon": w.grid_lon,
+                "elevation_m": w.elevation_m, "source": w.source,
+                "retrieved_at_utc": w.retrieved_at_utc,
+            }
+            if with_t:
+                hot = max(with_t, key=lambda d: d.max_temperature_c)
+                weather_info["hottest_day"] = hot.date
+                weather_info["max_temperature_c"] = hot.max_temperature_c
+                weather_input = {"max_temperature_c": hot.max_temperature_c,
+                                 "date": hot.date, "window_days": len(w.days)}
+        except WeatherError as e:
+            logger.warning("Weather fetch failed: %s", e)
+            weather_info = {"status": "unavailable", "message": str(e)}
+
     try:
         result = assess_all(
             CONFIG, req.crop, req.growth_stage, soil,
-            req.observations.model_dump())
+            req.observations.model_dump(), weather=weather_input)
     except KeyError as e:
         raise HTTPException(422, str(e.args[0]))
     except ValueError as e:
@@ -116,4 +158,5 @@ def assess(req: AssessRequest):
 
     result["location"] = {"lat": req.lat, "lon": req.lon}
     result["soil"] = soil_info
+    result["weather"] = weather_info
     return result

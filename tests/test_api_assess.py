@@ -8,7 +8,8 @@ client = TestClient(app)
 
 
 def post(**kw):
-    body = {"crop": "groundnut", "lat": 11.99, "lon": 79.49, "include_soil": False}
+    body = {"crop": "groundnut", "lat": 11.99, "lon": 79.49, "include_soil": False,
+            "include_weather": False}
     body.update(kw)
     return client.post("/assess", json=body)
 
