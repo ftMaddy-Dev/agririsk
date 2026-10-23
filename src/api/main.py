@@ -49,3 +49,8 @@ def get_soil(
         raise HTTPException(422, str(e))
     except SoilGridsUnavailableError as e:
         raise HTTPException(503, str(e))
+
+
+from src.api.assess import router as assess_router  # noqa: E402
+
+app.include_router(assess_router)
