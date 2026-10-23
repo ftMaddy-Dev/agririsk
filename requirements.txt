@@ -3,3 +3,4 @@ pyproj
 fastapi
 uvicorn[standard]
 pytest
+pandas
