@@ -5,6 +5,7 @@ Preliminary rule-based decision support, not a validated model prediction.
 from __future__ import annotations
 
 import logging
+from typing import Literal
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
@@ -34,7 +35,49 @@ class AssessRequest(BaseModel):
     include_soil: bool = True
 
 
-@router.post("/assess")
+class InputUsed(BaseModel):
+    value: float | str | bool | None = None
+    provenance: str  # seen: "manual", "retrieved"
+
+
+class Assessment(BaseModel):
+    category: Literal["waterlogging", "heat_stress", "water_stress",
+                      "disease", "soil_suitability"]
+    status: Literal["assessed", "incomplete"]
+    level: Literal["elevated", "not_elevated",
+                   "within_documented_ph_range",
+                   "outside_documented_ph_range"] | None = None
+    reasons: list[str] = []
+    missing_inputs: list[str] = []
+    inputs_used: dict[str, InputUsed] = {}
+    references: list[str] = []
+    caveats: list[str] = []
+    basis: str = "preliminary_rule_based"
+
+
+class Location(BaseModel):
+    lat: float
+    lon: float
+
+
+class SoilSummary(BaseModel):
+    status: Literal["ok", "partial", "nodata", "unavailable", "not_requested"]
+    message: str = ""  # names failing layers; empty when ok
+    layers_ok: int = 0
+    read_via: list[str] = []  # local, remote, cache
+
+
+class AssessResponse(BaseModel):
+    crop: str
+    growth_stage: str | None = None
+    growth_stage_note: str | None = None
+    disclaimer: str
+    assessments: list[Assessment]
+    location: Location
+    soil: SoilSummary
+
+
+@router.post("/assess", response_model=AssessResponse)
 def assess(req: AssessRequest):
     # Plain def: blocking network I/O runs in a worker thread.
     soil: dict = {}
