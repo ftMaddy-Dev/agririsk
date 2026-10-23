@@ -48,3 +48,39 @@ def test_soil_unavailable_still_200(monkeypatch):
     r = post(include_soil=True)
     assert r.status_code == 200
     assert r.json()["soil"]["status"] == "unavailable"
+
+
+def _fake_soil(clay_fails=False):
+    from src.data_collection.soilgrids_client import Measurement, SoilResult
+    ms = [
+        Measurement("sand", "0-5cm", "mean", 399.0, 39.9, "%", "ok", read_via="local"),
+        Measurement("silt", "0-5cm", "mean", 275.0, 27.5, "%", "ok", read_via="local"),
+        Measurement("phh2o", "0-5cm", "mean", 70.0, 7.0, "pH (H2O)", "ok", read_via="local"),
+    ]
+    if clay_fails:
+        ms.append(Measurement("clay", "0-5cm", "mean", None, None, "%", "error",
+                              "Access error: Cannot read 5928942 bytes"))
+    else:
+        ms.append(Measurement("clay", "0-5cm", "mean", 327.0, 32.7, "%", "ok",
+                              read_via="local"))
+    return SoilResult(11.99, 79.49, "test", "2026-10-23T00:00:00+00:00", 250, ms)
+
+
+def test_soil_partial_names_failed_layer(monkeypatch):
+    monkeypatch.setattr(assess_module, "fetch_soil_properties",
+                        lambda *a, **k: _fake_soil(clay_fails=True))
+    r = post(include_soil=True)
+    soil = r.json()["soil"]
+    assert r.status_code == 200
+    assert soil["status"] == "partial" and soil["layers_ok"] == 3
+    assert "clay_0-5cm" in soil["message"]
+    assert "Cannot read 5928942 bytes" in soil["message"]
+    assert soil["read_via"] == ["local"]
+
+
+def test_soil_ok_has_empty_message_and_read_via(monkeypatch):
+    monkeypatch.setattr(assess_module, "fetch_soil_properties",
+                        lambda *a, **k: _fake_soil())
+    soil = post(include_soil=True).json()["soil"]
+    assert soil["status"] == "ok" and soil["layers_ok"] == 4
+    assert soil["message"] == "" and soil["read_via"] == ["local"]
