@@ -62,6 +62,7 @@ class Measurement:
     unit: str
     status: str                # ok | nodata | outside_coverage | error
     message: str = ""
+    read_via: str = ""         
 
 
 @dataclass
@@ -153,7 +154,7 @@ def _cache_put(path: Path, m: Measurement) -> None:
 def _sample_remote(prop, depth, stat, lat, lon) -> Measurement:
     """One attempt at one layer. Raises RasterioIOError on a failed read."""
     spec = PROPERTIES[prop]
-    m = Measurement(prop, depth, stat, None, None, spec.unit, "error")
+    m = Measurement(prop, depth, stat, None, None, spec.unit, "error", read_via="remote")
     with rasterio.Env(**_GDAL_ENV):
         with rasterio.open(_layer_url(prop, depth, stat)) as ds:
             x, y = Transformer.from_crs(
@@ -187,8 +188,7 @@ def _sample_local(prop, depth, stat, lat, lon):
         raw = next(ds.sample([(x, y)]))[0]
         value = scale_value(raw, ds.nodata, spec.d_factor)
     return Measurement(prop, depth, stat, float(raw), value, spec.unit,
-                       "ok" if value is not None else "nodata")
-
+                       "ok" if value is not None else "nodata", read_via="local")
 
 def _sample_once(prop, depth, stat, lat, lon) -> Measurement:
     """Local window first; remote read only if the point is outside it."""
@@ -206,6 +206,7 @@ def _read_layer(prop, depth, stat, lat, lon, use_cache=True):
         cached = _cache_get(path)
         if cached is not None:
             logger.info("%s %s -> %s %s (cache)", prop, depth, cached.value, cached.status)
+            cached.read_via = "cache"
             return cached
 
     m = Measurement(prop, depth, stat, None, None, spec.unit, "error")
@@ -278,7 +279,7 @@ def save_csv(result: SoilResult, path: str | Path) -> Path:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     cols = ["latitude", "longitude", "retrieved_at_utc", "source", "property",
-            "depth", "statistic", "raw_value", "value", "unit", "status", "message"]
+                     "depth", "statistic", "raw_value", "value", "unit", "status", "message", "read_via"]
     with path.open("w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=cols)
         w.writeheader()

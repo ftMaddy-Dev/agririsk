@@ -38,7 +38,8 @@ class AssessRequest(BaseModel):
 def assess(req: AssessRequest):
     # Plain def: blocking network I/O runs in a worker thread.
     soil: dict = {}
-    soil_info = {"status": "not_requested", "message": "", "layers_ok": 0}
+    soil_info = {"status": "not_requested", "message": "", "layers_ok": 0,
+                 "read_via": []}
 
     if req.include_soil:
         try:
@@ -49,6 +50,14 @@ def assess(req: AssessRequest):
             ok = sum(1 for m in rec["measurements"] if m["status"] == "ok")
             soil_info["layers_ok"] = ok
             soil_info["status"] = "ok" if ok == 4 else ("partial" if ok else "nodata")
+            problems = []
+            for m in rec["measurements"]:
+                if m["status"] != "ok":
+                    problems.append(
+                        f'{m["property"]}_{m["depth"]}: {m["message"] or m["status"]}')
+            soil_info["message"] = "; ".join(problems)
+            soil_info["read_via"] = sorted(
+                {m["read_via"] for m in rec["measurements"] if m["read_via"]})
         except SoilGridsError as e:
             logger.warning("Soil fetch failed: %s", e)
             soil_info.update(status="unavailable", message=str(e))

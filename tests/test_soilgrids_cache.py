@@ -84,3 +84,31 @@ def test_use_cache_false_skips_cache(monkeypatch):
     monkeypatch.setattr(sg, "_sample_once", lambda *a, **k: _ok())
     sg._read_layer("phh2o", "0-5cm", "mean", 11.99, 79.49, use_cache=False)
     assert list(sg.CACHE_DIR.glob("*.json")) == []
+
+
+def test_cache_hit_reports_read_via_cache(monkeypatch):
+    monkeypatch.setattr(sg, "_sample_once", lambda *a, **k: _ok())
+    _read()                      # first call fills the cache
+    assert _read().read_via == "cache"
+
+
+def test_old_cache_file_without_read_via_still_loads():
+    path = sg._cache_path("phh2o", "0-5cm", "mean", 11.99, 79.49)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    old = {"property": "phh2o", "depth": "0-5cm", "statistic": "mean",
+           "raw_value": 70.0, "value": 7.0, "unit": "pH (H2O)",
+           "status": "ok", "message": ""}
+    path.write_text(json.dumps({
+        "cached_at_utc": datetime.now(timezone.utc).isoformat(),
+        "measurement": old}), encoding="utf-8")
+    m = _read()
+    assert m.status == "ok" and m.value == 7.0 and m.read_via == "cache"
+
+
+def test_failed_layer_keeps_error_message(monkeypatch):
+    def fake(*a, **k):
+        raise RasterioIOError("Cannot read 5928942 bytes")
+    monkeypatch.setattr(sg, "_sample_once", fake)
+    m = _read()
+    assert m.status == "error" and m.value is None
+    assert "Cannot read 5928942 bytes" in m.message
