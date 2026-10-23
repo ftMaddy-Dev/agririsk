@@ -1,15 +1,12 @@
-"""SoilGrids point-query client (reads ISRIC's VRT files via GDAL /vsicurl/).
-
-Retrieval only: no preprocessing, no derived agronomic variables.
-"""
-from __future__ import annotations
-
 import csv
 import json
 import logging
 import math
+import threading
+import time
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, asdict, field
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import rasterio
@@ -108,8 +105,6 @@ def _layer_url(prop: str, depth: str, stat: str) -> str:
     return f"{BASE_URL}/{prop}/{prop}_{depth}_{stat}.vrt"
 
 
-from concurrent.futures import ThreadPoolExecutor
-
 _GDAL_ENV = dict(
     GDAL_DISABLE_READDIR_ON_OPEN="EMPTY_DIR",
     CPL_VSIL_CURL_ALLOWED_EXTENSIONS=".vrt,.tif,.tiff",
@@ -117,29 +112,120 @@ _GDAL_ENV = dict(
     GDAL_HTTP_TIMEOUT="300",
 )
 
+# Retry: GDAL does not retry a dropped transfer, so we retry each layer here.
+_MAX_ATTEMPTS = 3
+_RETRY_PAUSE_S = 3
 
-def _read_layer(prop, depth, stat, lat, lon):
+# Per-layer cache. Only permanent outcomes are cached; errors never are.
+CACHE_DIR = Path(__file__).resolve().parents[2] / "data" / "cache" / "soilgrids"
+CACHE_TTL_DAYS = 30
+_CACHEABLE = {"ok", "nodata", "outside_coverage"}
+
+
+def _cache_path(prop, depth, stat, lat, lon) -> Path:
+    return CACHE_DIR / f"{prop}_{depth}_{stat}_{lat:.3f}_{lon:.3f}.json"
+
+
+def _cache_get(path: Path):
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        cached_at = datetime.fromisoformat(data["cached_at_utc"])
+        if datetime.now(timezone.utc) - cached_at > timedelta(days=CACHE_TTL_DAYS):
+            return None
+        return Measurement(**data["measurement"])
+    except (OSError, ValueError, KeyError, TypeError):
+        return None          # missing, corrupt or expired: just refetch
+
+
+def _cache_put(path: Path, m: Measurement) -> None:
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        tmp = path.with_name(f"{path.name}.{threading.get_ident()}.tmp")
+        tmp.write_text(json.dumps({
+            "cached_at_utc": datetime.now(timezone.utc).isoformat(),
+            "measurement": asdict(m),
+        }), encoding="utf-8")
+        tmp.replace(path)    # atomic, safe with parallel workers
+    except OSError as exc:
+        logger.warning("Could not write soil cache %s: %s", path, exc)
+
+
+def _sample_remote(prop, depth, stat, lat, lon) -> Measurement:
+    """One attempt at one layer. Raises RasterioIOError on a failed read."""
     spec = PROPERTIES[prop]
     m = Measurement(prop, depth, stat, None, None, spec.unit, "error")
-    try:
-        with rasterio.Env(**_GDAL_ENV):
-            with rasterio.open(_layer_url(prop, depth, stat)) as ds:
-                x, y = Transformer.from_crs(
-                    "EPSG:4326", ds.crs, always_xy=True).transform(lon, lat)
-                b = ds.bounds
-                if not (b.left <= x <= b.right and b.bottom <= y <= b.top):
-                    m.status = "outside_coverage"
-                else:
-                    raw = next(ds.sample([(x, y)]))[0]
-                    m.raw_value = float(raw)
-                    m.value = scale_value(raw, ds.nodata, spec.d_factor)
-                    m.status = "ok" if m.value is not None else "nodata"
-    except RasterioIOError as exc:
-        m.message = f"Access error: {exc}"
-        logger.warning("%s %s failed: %s", prop, depth, exc)
-    except Exception as exc:
-        m.message = f"Unexpected error: {exc}"
-        logger.exception("%s %s failed", prop, depth)
+    with rasterio.Env(**_GDAL_ENV):
+        with rasterio.open(_layer_url(prop, depth, stat)) as ds:
+            x, y = Transformer.from_crs(
+                "EPSG:4326", ds.crs, always_xy=True).transform(lon, lat)
+            b = ds.bounds
+            if not (b.left <= x <= b.right and b.bottom <= y <= b.top):
+                m.status = "outside_coverage"
+            else:
+                raw = next(ds.sample([(x, y)]))[0]
+                m.raw_value = float(raw)
+                m.value = scale_value(raw, ds.nodata, spec.d_factor)
+                m.status = "ok" if m.value is not None else "nodata"
+    return m
+
+
+LOCAL_DIR = Path(__file__).resolve().parents[2] / "data" / "raw" / "soilgrids_tn"
+
+
+def _sample_local(prop, depth, stat, lat, lon):
+    """Read from the local Tamil Nadu window. None = no file or point outside window."""
+    path = LOCAL_DIR / f"{prop}_{depth}_{stat}.tif"
+    if not path.exists():
+        return None
+    spec = PROPERTIES[prop]
+    with rasterio.open(path) as ds:
+        x, y = Transformer.from_crs(
+            "EPSG:4326", ds.crs, always_xy=True).transform(lon, lat)
+        b = ds.bounds
+        if not (b.left <= x <= b.right and b.bottom <= y <= b.top):
+            return None
+        raw = next(ds.sample([(x, y)]))[0]
+        value = scale_value(raw, ds.nodata, spec.d_factor)
+    return Measurement(prop, depth, stat, float(raw), value, spec.unit,
+                       "ok" if value is not None else "nodata")
+
+
+def _sample_once(prop, depth, stat, lat, lon) -> Measurement:
+    """Local window first; remote read only if the point is outside it."""
+    m = _sample_local(prop, depth, stat, lat, lon)
+    return m if m is not None else _sample_remote(prop, depth, stat, lat, lon)
+
+
+def _read_layer(prop, depth, stat, lat, lon, use_cache=True):
+    spec = PROPERTIES[prop]
+    path = None
+    if use_cache:
+        # Round so nearby requests share an entry (3 decimals is about 110 m).
+        lat, lon = round(lat, 3), round(lon, 3)
+        path = _cache_path(prop, depth, stat, lat, lon)
+        cached = _cache_get(path)
+        if cached is not None:
+            logger.info("%s %s -> %s %s (cache)", prop, depth, cached.value, cached.status)
+            return cached
+
+    m = Measurement(prop, depth, stat, None, None, spec.unit, "error")
+    for attempt in range(1, _MAX_ATTEMPTS + 1):
+        try:
+            m = _sample_once(prop, depth, stat, lat, lon)
+            break
+        except RasterioIOError as exc:
+            m.message = f"Access error: {exc}"
+            logger.warning("%s %s attempt %d/%d failed: %s",
+                           prop, depth, attempt, _MAX_ATTEMPTS, exc)
+            if attempt < _MAX_ATTEMPTS:
+                time.sleep(_RETRY_PAUSE_S * attempt)
+        except Exception as exc:
+            m.message = f"Unexpected error: {exc}"
+            logger.exception("%s %s failed", prop, depth)
+            break
+
+    if path is not None and m.status in _CACHEABLE:
+        _cache_put(path, m)
     logger.info("%s %s -> %s %s", prop, depth, m.value, m.status)
     return m
 
@@ -150,7 +236,8 @@ def fetch_soil_properties(
     properties: list[str] | None = None,
     depths: list[str] | None = None,
     stat: str = "mean",
-    max_workers: int = 6,
+    max_workers: int = 2,
+    use_cache: bool = True,
 ) -> SoilResult:
     lat, lon = validate_coordinates(lat, lon)
     properties = properties or DEFAULT_PROPERTIES
@@ -171,7 +258,7 @@ def fetch_soil_properties(
     jobs = [(p, d) for p in properties for d in depths]
     with ThreadPoolExecutor(max_workers=max_workers) as ex:
         result.measurements = list(
-            ex.map(lambda pd: _read_layer(pd[0], pd[1], stat, lat, lon), jobs))
+            ex.map(lambda pd: _read_layer(pd[0], pd[1], stat, lat, lon, use_cache), jobs))
 
     if all(m.status == "error" for m in result.measurements):
         raise SoilGridsUnavailableError(
@@ -199,4 +286,3 @@ def save_csv(result: SoilResult, path: str | Path) -> Path:
             w.writerow({"latitude": result.latitude, "longitude": result.longitude,
                         "retrieved_at_utc": result.retrieved_at_utc,
                         "source": result.source, **asdict(m)})
-    return path
