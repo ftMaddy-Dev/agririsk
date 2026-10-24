@@ -7,3 +7,4 @@ data/raw/
 data/processed/
 data/reference/tnau/*.pdf
 data/cache/
+data/observations.db

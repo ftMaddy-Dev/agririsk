@@ -54,3 +54,8 @@ def get_soil(
 from src.api.assess import router as assess_router  # noqa: E402
 
 app.include_router(assess_router)
+
+
+from src.api.observations import router as observations_router  # noqa: E402
+
+app.include_router(observations_router)
