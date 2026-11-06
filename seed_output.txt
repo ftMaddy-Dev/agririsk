@@ -1,0 +1,18 @@
+=== 1) seeds: leave-one-district PR-AUC (with soil minus no soil) ===
+  random_forest  seed=0 with=0.612 without=0.522 diff=+0.090
+  random_forest  seed=1 with=0.581 without=0.508 diff=+0.073
+  random_forest  seed=2 with=0.594 without=0.518 diff=+0.076
+  random_forest  seed=3 with=0.594 without=0.520 diff=+0.074
+  random_forest  seed=4 with=0.599 without=0.511 diff=+0.088
+  random_forest  diff mean=+0.080 sd=0.007 min=+0.073 max=+0.090
+
+  xgboost        seed=0 with=0.613 without=0.532 diff=+0.081
+  xgboost        seed=1 with=0.621 without=0.519 diff=+0.102
+  xgboost        seed=2 with=0.614 without=0.517 diff=+0.097
+  xgboost        seed=3 with=0.614 without=0.544 diff=+0.070
+  xgboost        seed=4 with=0.626 without=0.556 diff=+0.070
+  xgboost        diff mean=+0.084 sd=0.013 min=+0.070 max=+0.102
+
+=== 2) district bootstrap (1000 resamples, seed-42 models) ===
+  random_forest  diff median=+0.073  95% interval [-0.021, +0.173]  share>0=0.94
+  xgboost        diff median=+0.104  95% interval [-0.008, +0.196]  share>0=0.97
