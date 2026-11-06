@@ -54,3 +54,6 @@ Preliminary rule-based decision support. Not a validated model prediction.
 - Terminal 1 runs only the server (no --reload; restart after code changes).
 - Terminal 2 for everything else. Use cat heredocs or python patch scripts that
   end in py_compile, then check wc -l.
+- Module 5: observation log (src/observations/, POST/GET /observations, SQLite at
+  data/observations.db, git-ignored). Verified live with two test records, since deleted.
+  No auth yet: GET exposes farm coordinates.
