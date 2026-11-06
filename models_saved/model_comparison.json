@@ -1,0 +1,451 @@
+{
+  "caveat": "Label is rule-derived (surrogate), not an observed outcome; results show how well features reproduce the rule, not real heat damage. Positives are concentrated in a few district-seasons. Leave-one-year-out trains on later years too; not a forecasting test.",
+  "rows": 407,
+  "positives": 73,
+  "runs": {
+    "leave_one_year/season_only/decision_tree": {
+      "features": [
+        "window_start_month"
+      ],
+      "precision": 0.321,
+      "recall": 0.918,
+      "f1": 0.475,
+      "roc_auc": 0.763,
+      "pr_auc": 0.389
+    },
+    "leave_one_year/season_only/random_forest": {
+      "features": [
+        "window_start_month"
+      ],
+      "precision": 0.321,
+      "recall": 0.918,
+      "f1": 0.475,
+      "roc_auc": 0.764,
+      "pr_auc": 0.39
+    },
+    "leave_one_year/season_only/xgboost": {
+      "features": [
+        "window_start_month"
+      ],
+      "precision": 0.321,
+      "recall": 0.918,
+      "f1": 0.475,
+      "roc_auc": 0.756,
+      "pr_auc": 0.375
+    },
+    "leave_one_year/district_only/decision_tree": {
+      "features": [
+        "dist_Coimbatore",
+        "dist_Cuddalore",
+        "dist_Dindigul",
+        "dist_Erode",
+        "dist_Kancheepuram",
+        "dist_Karur",
+        "dist_Madurai",
+        "dist_Pudukkottai",
+        "dist_Ramanathapuram",
+        "dist_Sivagangai",
+        "dist_Theni",
+        "dist_Thirunelveli",
+        "dist_Thiruvallur",
+        "dist_Thiruvannamalai",
+        "dist_Thoothukudi",
+        "dist_Tiruppur",
+        "dist_Vellore",
+        "dist_Villupuram",
+        "dist_Virudhunagar"
+      ],
+      "precision": 0.209,
+      "recall": 0.671,
+      "f1": 0.318,
+      "roc_auc": 0.563,
+      "pr_auc": 0.229
+    },
+    "leave_one_year/district_only/random_forest": {
+      "features": [
+        "dist_Coimbatore",
+        "dist_Cuddalore",
+        "dist_Dindigul",
+        "dist_Erode",
+        "dist_Kancheepuram",
+        "dist_Karur",
+        "dist_Madurai",
+        "dist_Pudukkottai",
+        "dist_Ramanathapuram",
+        "dist_Sivagangai",
+        "dist_Theni",
+        "dist_Thirunelveli",
+        "dist_Thiruvallur",
+        "dist_Thiruvannamalai",
+        "dist_Thoothukudi",
+        "dist_Tiruppur",
+        "dist_Vellore",
+        "dist_Villupuram",
+        "dist_Virudhunagar"
+      ],
+      "precision": 0.311,
+      "recall": 0.767,
+      "f1": 0.443,
+      "roc_auc": 0.764,
+      "pr_auc": 0.352
+    },
+    "leave_one_year/district_only/xgboost": {
+      "features": [
+        "dist_Coimbatore",
+        "dist_Cuddalore",
+        "dist_Dindigul",
+        "dist_Erode",
+        "dist_Kancheepuram",
+        "dist_Karur",
+        "dist_Madurai",
+        "dist_Pudukkottai",
+        "dist_Ramanathapuram",
+        "dist_Sivagangai",
+        "dist_Theni",
+        "dist_Thirunelveli",
+        "dist_Thiruvallur",
+        "dist_Thiruvannamalai",
+        "dist_Thoothukudi",
+        "dist_Tiruppur",
+        "dist_Vellore",
+        "dist_Villupuram",
+        "dist_Virudhunagar"
+      ],
+      "precision": 0.308,
+      "recall": 0.767,
+      "f1": 0.439,
+      "roc_auc": 0.744,
+      "pr_auc": 0.324
+    },
+    "leave_one_year/weather_only/decision_tree": {
+      "features": [
+        "tmin_mean_c",
+        "rain_sum_mm",
+        "rain_max_day_mm",
+        "et0_sum_mm",
+        "rain_minus_et0_mm"
+      ],
+      "precision": 0.439,
+      "recall": 0.74,
+      "f1": 0.551,
+      "roc_auc": 0.822,
+      "pr_auc": 0.457
+    },
+    "leave_one_year/weather_only/random_forest": {
+      "features": [
+        "tmin_mean_c",
+        "rain_sum_mm",
+        "rain_max_day_mm",
+        "et0_sum_mm",
+        "rain_minus_et0_mm"
+      ],
+      "precision": 0.523,
+      "recall": 0.781,
+      "f1": 0.626,
+      "roc_auc": 0.867,
+      "pr_auc": 0.506
+    },
+    "leave_one_year/weather_only/xgboost": {
+      "features": [
+        "tmin_mean_c",
+        "rain_sum_mm",
+        "rain_max_day_mm",
+        "et0_sum_mm",
+        "rain_minus_et0_mm"
+      ],
+      "precision": 0.506,
+      "recall": 0.589,
+      "f1": 0.544,
+      "roc_auc": 0.856,
+      "pr_auc": 0.543
+    },
+    "leave_one_year/context_aware/decision_tree": {
+      "features": [
+        "tmin_mean_c",
+        "rain_sum_mm",
+        "rain_max_day_mm",
+        "et0_sum_mm",
+        "rain_minus_et0_mm",
+        "sand_0_5cm_mean",
+        "silt_0_5cm_mean",
+        "clay_0_5cm_mean",
+        "phh2o_0_5cm_mean",
+        "window_start_month",
+        "regime_irrigated",
+        "regime_rainfed",
+        "regime_unspecified"
+      ],
+      "precision": 0.5,
+      "recall": 0.795,
+      "f1": 0.614,
+      "roc_auc": 0.832,
+      "pr_auc": 0.489
+    },
+    "leave_one_year/context_aware/random_forest": {
+      "features": [
+        "tmin_mean_c",
+        "rain_sum_mm",
+        "rain_max_day_mm",
+        "et0_sum_mm",
+        "rain_minus_et0_mm",
+        "sand_0_5cm_mean",
+        "silt_0_5cm_mean",
+        "clay_0_5cm_mean",
+        "phh2o_0_5cm_mean",
+        "window_start_month",
+        "regime_irrigated",
+        "regime_rainfed",
+        "regime_unspecified"
+      ],
+      "precision": 0.617,
+      "recall": 0.795,
+      "f1": 0.695,
+      "roc_auc": 0.901,
+      "pr_auc": 0.701
+    },
+    "leave_one_year/context_aware/xgboost": {
+      "features": [
+        "tmin_mean_c",
+        "rain_sum_mm",
+        "rain_max_day_mm",
+        "et0_sum_mm",
+        "rain_minus_et0_mm",
+        "sand_0_5cm_mean",
+        "silt_0_5cm_mean",
+        "clay_0_5cm_mean",
+        "phh2o_0_5cm_mean",
+        "window_start_month",
+        "regime_irrigated",
+        "regime_rainfed",
+        "regime_unspecified"
+      ],
+      "precision": 0.654,
+      "recall": 0.726,
+      "f1": 0.688,
+      "roc_auc": 0.898,
+      "pr_auc": 0.7
+    },
+    "leave_one_district/season_only/decision_tree": {
+      "features": [
+        "window_start_month"
+      ],
+      "precision": 0.283,
+      "recall": 0.726,
+      "f1": 0.408,
+      "roc_auc": 0.642,
+      "pr_auc": 0.256
+    },
+    "leave_one_district/season_only/random_forest": {
+      "features": [
+        "window_start_month"
+      ],
+      "precision": 0.283,
+      "recall": 0.726,
+      "f1": 0.408,
+      "roc_auc": 0.658,
+      "pr_auc": 0.262
+    },
+    "leave_one_district/season_only/xgboost": {
+      "features": [
+        "window_start_month"
+      ],
+      "precision": 0.283,
+      "recall": 0.726,
+      "f1": 0.408,
+      "roc_auc": 0.655,
+      "pr_auc": 0.26
+    },
+    "leave_one_district/district_only/decision_tree": {
+      "features": [
+        "dist_Coimbatore",
+        "dist_Cuddalore",
+        "dist_Dindigul",
+        "dist_Erode",
+        "dist_Kancheepuram",
+        "dist_Karur",
+        "dist_Madurai",
+        "dist_Pudukkottai",
+        "dist_Ramanathapuram",
+        "dist_Sivagangai",
+        "dist_Theni",
+        "dist_Thirunelveli",
+        "dist_Thiruvallur",
+        "dist_Thiruvannamalai",
+        "dist_Thoothukudi",
+        "dist_Tiruppur",
+        "dist_Vellore",
+        "dist_Villupuram",
+        "dist_Virudhunagar"
+      ],
+      "precision": 0.098,
+      "recall": 0.37,
+      "f1": 0.155,
+      "roc_auc": 0.338,
+      "pr_auc": 0.138
+    },
+    "leave_one_district/district_only/random_forest": {
+      "features": [
+        "dist_Coimbatore",
+        "dist_Cuddalore",
+        "dist_Dindigul",
+        "dist_Erode",
+        "dist_Kancheepuram",
+        "dist_Karur",
+        "dist_Madurai",
+        "dist_Pudukkottai",
+        "dist_Ramanathapuram",
+        "dist_Sivagangai",
+        "dist_Theni",
+        "dist_Thirunelveli",
+        "dist_Thiruvallur",
+        "dist_Thiruvannamalai",
+        "dist_Thoothukudi",
+        "dist_Tiruppur",
+        "dist_Vellore",
+        "dist_Villupuram",
+        "dist_Virudhunagar"
+      ],
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "roc_auc": 0.276,
+      "pr_auc": 0.125
+    },
+    "leave_one_district/district_only/xgboost": {
+      "features": [
+        "dist_Coimbatore",
+        "dist_Cuddalore",
+        "dist_Dindigul",
+        "dist_Erode",
+        "dist_Kancheepuram",
+        "dist_Karur",
+        "dist_Madurai",
+        "dist_Pudukkottai",
+        "dist_Ramanathapuram",
+        "dist_Sivagangai",
+        "dist_Theni",
+        "dist_Thirunelveli",
+        "dist_Thiruvallur",
+        "dist_Thiruvannamalai",
+        "dist_Thoothukudi",
+        "dist_Tiruppur",
+        "dist_Vellore",
+        "dist_Villupuram",
+        "dist_Virudhunagar"
+      ],
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "roc_auc": 0.285,
+      "pr_auc": 0.134
+    },
+    "leave_one_district/weather_only/decision_tree": {
+      "features": [
+        "tmin_mean_c",
+        "rain_sum_mm",
+        "rain_max_day_mm",
+        "et0_sum_mm",
+        "rain_minus_et0_mm"
+      ],
+      "precision": 0.41,
+      "recall": 0.658,
+      "f1": 0.505,
+      "roc_auc": 0.787,
+      "pr_auc": 0.386
+    },
+    "leave_one_district/weather_only/random_forest": {
+      "features": [
+        "tmin_mean_c",
+        "rain_sum_mm",
+        "rain_max_day_mm",
+        "et0_sum_mm",
+        "rain_minus_et0_mm"
+      ],
+      "precision": 0.473,
+      "recall": 0.726,
+      "f1": 0.573,
+      "roc_auc": 0.849,
+      "pr_auc": 0.43
+    },
+    "leave_one_district/weather_only/xgboost": {
+      "features": [
+        "tmin_mean_c",
+        "rain_sum_mm",
+        "rain_max_day_mm",
+        "et0_sum_mm",
+        "rain_minus_et0_mm"
+      ],
+      "precision": 0.457,
+      "recall": 0.589,
+      "f1": 0.515,
+      "roc_auc": 0.832,
+      "pr_auc": 0.409
+    },
+    "leave_one_district/context_aware/decision_tree": {
+      "features": [
+        "tmin_mean_c",
+        "rain_sum_mm",
+        "rain_max_day_mm",
+        "et0_sum_mm",
+        "rain_minus_et0_mm",
+        "sand_0_5cm_mean",
+        "silt_0_5cm_mean",
+        "clay_0_5cm_mean",
+        "phh2o_0_5cm_mean",
+        "window_start_month",
+        "regime_irrigated",
+        "regime_rainfed",
+        "regime_unspecified"
+      ],
+      "precision": 0.45,
+      "recall": 0.74,
+      "f1": 0.56,
+      "roc_auc": 0.806,
+      "pr_auc": 0.419
+    },
+    "leave_one_district/context_aware/random_forest": {
+      "features": [
+        "tmin_mean_c",
+        "rain_sum_mm",
+        "rain_max_day_mm",
+        "et0_sum_mm",
+        "rain_minus_et0_mm",
+        "sand_0_5cm_mean",
+        "silt_0_5cm_mean",
+        "clay_0_5cm_mean",
+        "phh2o_0_5cm_mean",
+        "window_start_month",
+        "regime_irrigated",
+        "regime_rainfed",
+        "regime_unspecified"
+      ],
+      "precision": 0.542,
+      "recall": 0.616,
+      "f1": 0.577,
+      "roc_auc": 0.888,
+      "pr_auc": 0.595
+    },
+    "leave_one_district/context_aware/xgboost": {
+      "features": [
+        "tmin_mean_c",
+        "rain_sum_mm",
+        "rain_max_day_mm",
+        "et0_sum_mm",
+        "rain_minus_et0_mm",
+        "sand_0_5cm_mean",
+        "silt_0_5cm_mean",
+        "clay_0_5cm_mean",
+        "phh2o_0_5cm_mean",
+        "window_start_month",
+        "regime_irrigated",
+        "regime_rainfed",
+        "regime_unspecified"
+      ],
+      "precision": 0.613,
+      "recall": 0.521,
+      "f1": 0.563,
+      "roc_auc": 0.882,
+      "pr_auc": 0.606
+    }
+  }
+}

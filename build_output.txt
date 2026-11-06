@@ -1,0 +1,13 @@
+Weather attempt 1/3 failed: <urlopen error _ssl.c:1063: The handshake operation timed out>
+Weather attempt 2/3 failed: <urlopen error _ssl.c:1063: The handshake operation timed out>
+Weather attempt 1/3 failed: <urlopen error _ssl.c:1063: The handshake operation timed out>
+Weather attempt 1/3 failed: <urlopen error _ssl.c:1063: The handshake operation timed out>
+Weather attempt 1/3 failed: <urlopen error _ssl.c:1063: The handshake operation timed out>
+Weather attempt 1/3 failed: <urlopen error _ssl.c:1063: The handshake operation timed out>
+Weather attempt 2/3 failed: <urlopen error [Errno -3] Temporary failure in name resolution>
+rows: 407 | skipped: 0
+validation problems: none
+label_heat_flag
+0    334
+1     73
+wrote data/processed/dataset_groundnut_surrogate.csv

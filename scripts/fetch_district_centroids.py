@@ -12,7 +12,8 @@ import pandas as pd
 from src.data_collection.weather_client import _http_get_json
 
 ALIASES = {"Thirunelveli": "Tirunelveli", "Thiruvannamalai": "Tiruvannamalai",
-           "Kancheepuram": "Kanchipuram", "Thiruvallur": "Tiruvallur"}  # guesses; verify
+           "Kancheepuram": "Kanchipuram", "Thiruvallur": "Tiruvallur",
+           "Sivagangai": "Sivaganga", "Virudhunagar": "Virudunagar"}  # guesses; verify
 cal = pd.read_csv("data/reference/season_calendar_groundnut.csv")
 out = []
 for d in sorted(cal["district"].unique()):
