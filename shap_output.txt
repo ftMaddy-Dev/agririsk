@@ -1,0 +1,43 @@
+
+=== context_aware__xgboost: mean |SHAP| (log-odds for XGBoost, probability for RF) ===
+et0_sum_mm            2.7762
+tmin_mean_c           1.2989
+rain_sum_mm           0.7918
+rain_max_day_mm       0.5937
+sand_0_5cm_mean       0.5786
+silt_0_5cm_mean       0.4798
+regime_irrigated      0.4464
+rain_minus_et0_mm     0.4161
+regime_unspecified    0.2266
+window_start_month    0.1765
+phh2o_0_5cm_mean      0.1704
+clay_0_5cm_mean       0.1081
+regime_rainfed        0.0584
+share by group: {'season/regime': 0.1120000034570694, 'soil': 0.16500000655651093, 'weather': 0.7239999771118164}
+
+=== context_aware__random_forest: mean |SHAP| (log-odds for XGBoost, probability for RF) ===
+et0_sum_mm            0.1513
+tmin_mean_c           0.1091
+window_start_month    0.0580
+silt_0_5cm_mean       0.0308
+rain_sum_mm           0.0279
+sand_0_5cm_mean       0.0248
+rain_minus_et0_mm     0.0246
+phh2o_0_5cm_mean      0.0226
+rain_max_day_mm       0.0168
+clay_0_5cm_mean       0.0138
+regime_irrigated      0.0110
+regime_rainfed        0.0063
+regime_unspecified    0.0015
+share by group: {'season/regime': 0.154, 'soil': 0.185, 'weather': 0.661}
+
+=== weather_only__xgboost: mean |SHAP| (log-odds for XGBoost, probability for RF) ===
+et0_sum_mm           2.8787
+tmin_mean_c          0.6986
+rain_max_day_mm      0.6590
+rain_sum_mm          0.5793
+rain_minus_et0_mm    0.4892
+share by group: {'weather': 1.0}
+
+saved plots and shap_summary.csv to models_saved
+NOTE: in-sample, surrogate label; soil importance may be a district fingerprint.

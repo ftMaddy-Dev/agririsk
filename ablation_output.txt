@@ -1,0 +1,13 @@
+with soil   : 13 features
+without soil: 9 features
+
+=== leave_one_year ===
+  with_soil  random_forest  roc_auc=0.901 pr_auc=0.701 f1=0.695
+  with_soil  xgboost        roc_auc=0.898 pr_auc=0.7 f1=0.688
+  no_soil    random_forest  roc_auc=0.892 pr_auc=0.667 f1=0.621
+  no_soil    xgboost        roc_auc=0.882 pr_auc=0.639 f1=0.637
+=== leave_one_district ===
+  with_soil  random_forest  roc_auc=0.888 pr_auc=0.595 f1=0.577
+  with_soil  xgboost        roc_auc=0.882 pr_auc=0.606 f1=0.563
+  no_soil    random_forest  roc_auc=0.872 pr_auc=0.516 f1=0.618
+  no_soil    xgboost        roc_auc=0.847 pr_auc=0.494 f1=0.575
