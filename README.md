@@ -26,6 +26,8 @@ Model scores measure how well features reproduce that rule, not real crop damage
     pip install -r requirements.txt
     python -m pytest tests/ -q
 
+The first install is large (xgboost pulls in about 200 MB of libraries). On a slow connection, rerun `pip install --resume-retries 10 --timeout 120 -r requirements.txt`.
+
 Windows note: rasterio's bundled libraries were blocked by a Code Integrity policy on one machine;
 development used WSL2 (Ubuntu).
 
@@ -51,7 +53,7 @@ Docs: http://127.0.0.1:8000/docs
 
 `scripts/` holds the data build, training-related and analysis scripts (`build_dataset.py`,
 `ablation_soil.py`, `seed_check.py`, `shap_analysis.py`, ...). Run any of them with `--help`.
-Raw data, caches, models and the observation database are not in git.
+Raw data, caches and the observation database are not in git. The saved surrogate models and SHAP outputs in `models_saved/` are committed, so the API and tests work from a clean clone.
 
 ## Limitations
 
