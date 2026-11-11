@@ -1,5 +1,9 @@
 import pytest
+import os
 from fastapi.testclient import TestClient
+
+KEY = "test-key"
+os.environ["AGRIRISK_API_KEY"] = KEY
 from pydantic import ValidationError
 
 import src.api.observations as obs_api
@@ -34,7 +38,7 @@ def test_extra_field_rejected():
 @pytest.fixture
 def client(tmp_path, monkeypatch):
     monkeypatch.setattr(obs_api, "DB_PATH", tmp_path / "o.db")
-    return TestClient(app)
+    return TestClient(app, headers={"X-API-Key": KEY})
 
 
 def test_post_and_list(client):

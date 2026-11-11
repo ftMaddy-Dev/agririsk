@@ -2,12 +2,14 @@
 from pathlib import Path
 from typing import Literal
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Depends, Query
+
+from src.api.auth import require_api_key
 
 from src.observations import store
 from src.observations.schema import ObservationIn, ObservationOut
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(require_api_key)])
 DB_PATH = Path(__file__).resolve().parents[2] / "data" / "observations.db"
 
 
