@@ -59,3 +59,8 @@ app.include_router(assess_router)
 from src.api.observations import router as observations_router  # noqa: E402
 
 app.include_router(observations_router)
+
+
+from src.api.predict import router as predict_router  # noqa: E402
+
+app.include_router(predict_router)
