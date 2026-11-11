@@ -122,11 +122,14 @@
           "note": "Range across TNAU varieties VRI(Sv)2, TMV7, VRI3, VRI4, VRI5; CPG 2020 p.199 lists VRI(Sv)2, TMV7, VRI3 at 75-85 days"
         },
         "soil_ph_range": {
-          "value": null,
+          "value": [
+            5.5,
+            8.0
+          ],
           "unit": "pH",
-          "status": "unresolved",
-          "source": "",
-          "note": "CPG 2020 sesame section (pp.198-206) gives no pH range",
+          "status": "verified",
+          "source": "https://iior.icar.gov.in/sites/default/files/iiorcontent/pops/sesame.pdf",
+          "note": "ICAR AICRP Sesame and Niger, 'Improved Technology for Maximizing Production of Sesame' (rev. Dec 2013), p.13: optimum pH 5.5 to 8.0; acidic or alkaline soils not suitable. Root-zone pH; the soil depth to evaluate is not defined. Unofficial sources disagree (e.g. 5.5 to 7.0); ICAR value used.",
           "secondary_candidates": [
             {
               "value": [
@@ -142,14 +145,15 @@
               ],
               "source": "agridots.com course page (not official)"
             }
-          ]
+          ],
+          "source_type": "icar"
         },
         "waterlogging_tolerance_days": {
           "value": null,
           "unit": "days",
           "status": "unresolved",
           "source": "",
-          "note": "CPG 2020 pp.199-200 says to level beds to prevent water stagnation, which affects germination adversely; no numeric tolerance given"
+          "note": "No numeric tolerance in TNAU CPG 2020 or the ICAR sesame guide; ICAR states only that sesame is very sensitive to waterlogging"
         },
         "soil_texture_preference": {
           "value": null,
@@ -157,6 +161,38 @@
           "status": "unresolved",
           "source": "",
           "note": "Need TNAU texture/drainage requirement for sesame"
+        },
+        "temperature_oil_loss_above_c": {
+          "value": 40,
+          "unit": "degC",
+          "status": "verified",
+          "source": "https://iior.icar.gov.in/sites/default/files/iiorcontent/pops/sesame.pdf",
+          "source_type": "icar",
+          "note": "ICAR AICRP Sesame and Niger, 'Improved Technology for Maximizing Production of Sesame' (rev. Dec 2013), p.5: oil content reduces above 40 C with hot winds; not a TNAU value"
+        },
+        "temperature_severe_yield_loss_above_c": {
+          "value": 45,
+          "unit": "degC",
+          "status": "verified",
+          "source": "https://iior.icar.gov.in/sites/default/files/iiorcontent/pops/sesame.pdf",
+          "source_type": "icar",
+          "note": "ICAR AICRP Sesame and Niger, 'Improved Technology for Maximizing Production of Sesame' (rev. Dec 2013), p.5: severe yield reduction beyond 45 C"
+        },
+        "temperature_severe_yield_loss_below_c": {
+          "value": 15,
+          "unit": "degC",
+          "status": "verified",
+          "source": "https://iior.icar.gov.in/sites/default/files/iiorcontent/pops/sesame.pdf",
+          "source_type": "icar",
+          "note": "ICAR AICRP Sesame and Niger, 'Improved Technology for Maximizing Production of Sesame' (rev. Dec 2013), p.5: severe yield reduction below 15 C"
+        },
+        "waterlogging_sensitivity": {
+          "value": "highly sensitive",
+          "unit": "",
+          "status": "verified",
+          "source": "https://iior.icar.gov.in/sites/default/files/iiorcontent/pops/sesame.pdf",
+          "source_type": "icar",
+          "note": "ICAR AICRP Sesame and Niger, 'Improved Technology for Maximizing Production of Sesame' (rev. Dec 2013), pp.5 and 15: very sensitive to excess water; long stagnation can ruin the crop. Qualitative only; no numeric tolerance in days is given"
         }
       }
     },

@@ -10,9 +10,15 @@ def test_verified_value_returned():
 
 
 def test_unresolved_never_returned():
-    assert usable_value(cfg, "sesame", "soil_ph_range") is None
+    # No numeric waterlogging tolerance exists in TNAU or the ICAR sesame guide.
+    assert usable_value(cfg, "sesame", "waterlogging_tolerance_days") is None
     assert usable_value(cfg, "groundnut", "soil_ph_range") is None
-    assert "soil_ph_range" in unresolved(cfg, "sesame")
+    assert "waterlogging_tolerance_days" in unresolved(cfg, "sesame")
+
+
+def test_icar_sesame_ph_is_returned():
+    assert usable_value(cfg, "sesame", "soil_ph_range") == [5.5, 8.0]
+    assert "soil_ph_range" not in unresolved(cfg, "sesame")
 
 
 def test_unknown_crop():
